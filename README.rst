@@ -1,6 +1,6 @@
 
-.. image:: https://github.com/SCM-NV/qmflows/workflows/Tests/badge.svg
-   :target: https://github.com/SCM-NV/qmflows/actions
+.. image:: https://github.com/samadel98/qmflows/actions/workflows/pythonapp.yml/badge.svg
+   :target: https://github.com/samadel98/qmflows/actions/workflows/pythonapp.yml
 .. image:: https://codecov.io/gh/SCM-NV/qmflows/branch/master/graph/badge.svg
   :target: https://codecov.io/gh/SCM-NV/qmflows
 .. image:: https://readthedocs.org/projects/qmflows/badge/?version=latest

@@ -6,6 +6,7 @@ from typing import Optional
 import pytest
 from assertionlib import assertion
 from pytest_mock import MockFixture
+from scm import plams
 from scm.plams import Molecule
 
 from qmflows import adf, templates
@@ -48,7 +49,11 @@ def test_adf_mock(mocker: MockFixture):
 
 
 @pytest.mark.parametrize("name,match,status", [
-    ("bob", "Generic property 'bob' not defined", None),
+    pytest.param(
+        "bob", "Generic property 'bob' not defined", None,
+        # Unpickling an `ADFJob` requires a module that was removed in PLAMS 2025.101
+        marks=pytest.mark.skipif(not hasattr(plams, "ADFJob"), reason="requires PLAMS < 2025.101"),
+    ),
     ("energy", "It is not possible to retrieve property: 'energy'", "crashed"),
 ], ids=["undefined_property", "job_crashed"])
 @stdout_to_logger

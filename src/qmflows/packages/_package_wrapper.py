@@ -6,10 +6,10 @@ taking a single :class:`plams.Job<scm.plams.core.basejob.Job>` type as argument
 and, upon calling :class:`pkg = PackageWrapper(...); pkg()<PackageWrapper.__call__>` an
 appropiate instance of Package subclas instance is called.
 
-For example, passing :class:`plams.ADFJob<scm.plams.interfaces.adfsuite.adf.ADFJob>` will
-automatically call :data:`~qmflows.adf`,
-:class:`plams.Cp2kJob<scm.plams.interfaces.thirdparty.cp2k.Cp2kJob>` will
-call :data:`~qmflows.cp2k`, *etc*.
+For example, passing :class:`plams.Cp2kJob<scm.plams.interfaces.thirdparty.cp2k.Cp2kJob>` will
+automatically call :data:`~qmflows.cp2k`,
+:class:`plams.ORCAJob<scm.plams.interfaces.thirdparty.orca.ORCAJob>` will
+call :data:`~qmflows.orca`, *etc*.
 
 When no appropiate Package is found, let's say after passing the :class:`MyFancyJob` type,
 the PackageWrapper class will still run the job as usual and return the matching
@@ -91,10 +91,14 @@ API
 
         >>> JOB_MAP: dict[type[plams.Job], Package] = {
         ...     plams.Cp2kJob: cp2k,
-        ...     plams.ADFJob: adf,
-        ...     plams.DFTBJob: dftb,
         ...     plams.ORCAJob: orca
         ... }
+
+        # Only available in PLAMS < 2025.101
+        >>> if hasattr(plams, "ADFJob"):
+        ...     JOB_MAP[plams.ADFJob] = adf
+        >>> if hasattr(plams, "DFTBJob"):
+        ...     JOB_MAP[plams.DFTBJob] = dftb
 
 """
 
@@ -130,10 +134,14 @@ JT = TypeVar("JT", bound=plams.core.basejob.Job)
 
 JOB_MAP: dict[type[plams.Job], Package] = {
     plams.Cp2kJob: cp2k,
-    plams.ADFJob: adf,
-    plams.DFTBJob: dftb,
     plams.ORCAJob: orca
 }
+
+# `ADFJob` and `DFTBJob` (the pre-AMS ADF and DFTB programs) were removed in PLAMS 2025.101
+if hasattr(plams, "ADFJob"):
+    JOB_MAP[plams.ADFJob] = adf
+if hasattr(plams, "DFTBJob"):
+    JOB_MAP[plams.DFTBJob] = dftb
 
 
 class ResultWrapper(Result):
@@ -153,17 +161,17 @@ class PackageWrapper(Package, Generic[JT]):
     --------
     .. code:: python
 
-        >>> from scm.plams import ADFJob, AMSJob
+        >>> from scm.plams import Cp2kJob, AMSJob
 
         >>> from qmflows import PackageWrapper, run
-        >>> from qmflows.packages import ResultWrapper, ADF_Result
+        >>> from qmflows.packages import ResultWrapper, CP2K_Result
 
         # Start of with two PackageWrapper instances
-        >>> pkg_adf = PackageWrapper(ADFJob)
+        >>> pkg_cp2k = PackageWrapper(Cp2kJob)
         >>> pkg_ams = PackageWrapper(AMSJob)
 
         # End up with two different Result instances
-        >>> result_adf: ADF_Result = run(pkg_adf(...), ...)  # doctest: +SKIP
+        >>> result_cp2k: CP2K_Result = run(pkg_cp2k(...), ...)  # doctest: +SKIP
         >>> result_ams: ResultWrapper = run(pkg_ams(...), ...)  # doctest: +SKIP
 
     Attributes

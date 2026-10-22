@@ -79,7 +79,7 @@ def extract_line_value(
         parse_Line: ParserElement = OneOrMore(Suppress(SkipTo(pattern)) + SkipTo('\n'))
     else:
         parse_Line = SkipTo('\n')
-    properties = parse_file(parse_Line, file_name).asList()
+    properties = parse_file(parse_Line, file_name).as_list()
     last_line = properties[-1].split()
 
     return float(last_line[pos])

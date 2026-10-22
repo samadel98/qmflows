@@ -71,10 +71,15 @@ class Settings(plams.core.settings.Settings):
 
 def _unsuported_operation(meth: Callable[..., Any]) -> Callable[..., NoReturn]:
     """Decorate a method such that it raises a :exc:`TypeError`."""
-    @wraps(meth)
     def new_meth(self, *args, **kwargs) -> NoReturn:
         raise TypeError(f"{self.__class__.__name__!r} does not "
                         "support item assignment or deletion")
+
+    # Avoid `functools.wraps`, as the `__wrapped__` attribute pointing to a builtin
+    # method crashes the doctest collection of some Python 3.11 patch releases
+    new_meth.__name__ = meth.__name__
+    new_meth.__qualname__ = meth.__qualname__
+    new_meth.__doc__ = "Raise a :exc:`TypeError`, as this operation is not supported."
     return new_meth
 
 

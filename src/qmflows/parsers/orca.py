@@ -131,7 +131,7 @@ def parse_molecular_orbitals(file_name: str | os.PathLike[str]) -> InfoMO:
     # Parse the blocks of MOs
     start = 'MOLECULAR ORBITALS'
     end = '\n\n'
-    block = parse_file(parse_section(start, end), file_name).asList()
+    block = parse_file(parse_section(start, end), file_name).as_list()
 
     # split the block in lines  discarding the first line
     lines = block[0].splitlines()[1:]

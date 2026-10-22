@@ -1,0 +1,372 @@
+ DBCSR| CPU Multiplication driver                                           XSMM (U)
+ DBCSR| Multrec recursion limit                                              512 (U)
+ DBCSR| Multiplication stack size                                           1000 (D)
+ DBCSR| Maximum elements for images                                    UNLIMITED (U)
+ DBCSR| Multiplicative factor virtual images                                   1 (U)
+ DBCSR| Use multiplication densification                                       T (D)
+ DBCSR| Multiplication size stacks                                             3 (U)
+ DBCSR| Use memory pool for CPU allocation                                     F (U)
+ DBCSR| OMP: Current number of threads                                         4
+ DBCSR| OMP: Max number of threads                                             4
+ DBCSR| Split modifier for TAS multiplication algorithm                  1.0E+00 (U)
+
+
+  **** **** ******  **  PROGRAM STARTED AT               2026-10-22 17:38:34.772
+ ***** ** ***  *** **   PROGRAM STARTED ON                                    vm
+ **    ****   ******    PROGRAM STARTED BY                             <unknown>
+ ***** **    ** ** **   PROGRAM PROCESS ID                                  1813
+  **** **  *******  **  PROGRAM STARTED IN /home/user/runs/bt/test_cp2k_freq0/te
+                                           st_cp2k_freq/cp2k_job
+
+ CP2K| version string:                                       CP2K version 2026.2
+ CP2K| source code revision number:                                   67b5da876d
+ CP2K| cp2kflags: omp libint fftw3 libxc libxs libxsmm spglib libdftd4 dftd4_v4_
+ CP2K|            2 s_dftd3 mctc-lib tblite libvori libbqb libfci
+ CP2K| is freely available from                            https://www.cp2k.org/
+ CP2K| Program compiled at                                   2026-07-31 15:02:25
+ CP2K| Program compiled on                                                PC9404
+ CP2K| Program compiled for                                               x86_64
+ CP2K| Data directory path              /home/user/cp2k-bin/cp2k-2026.2-src/data
+ CP2K| Input file name                                               cp2k_job.in
+
+ GLOBAL| Force Environment number                                              1
+ GLOBAL| Basis set file name                                        BASIS_MOLOPT
+ GLOBAL| Potential file name                                      GTH_POTENTIALS
+ GLOBAL| MM Potential file name                                     MM_POTENTIAL
+ GLOBAL| Coordinate file name                                      __STD_INPUT__
+ GLOBAL| Method name                                                        CP2K
+ GLOBAL| Project name                                                       cp2k
+ GLOBAL| Run type                                           VIBRATIONAL_ANALYSIS
+ GLOBAL| FFT library                                                       FFTW3
+ GLOBAL| Diagonalization library                                       ScaLAPACK
+ GLOBAL| Cholesky decomposition library                                ScaLAPACK
+ GLOBAL| DGEMM library                                                      BLAS
+ GLOBAL| Direct generalized diagonalization requested                          F
+ GLOBAL| Orthonormality check for eigenvectors                          DISABLED
+ GLOBAL| Matrix multiplication library                                 ScaLAPACK
+ GLOBAL| All-to-all communication in single precision                          F
+ GLOBAL| FFTs using library dependent lengths                                  F
+ GLOBAL| Grid backend                                                       AUTO
+ GLOBAL| Global print level                                                  LOW
+ GLOBAL| MPI I/O enabled                                                       T
+ GLOBAL| Total number of message passing processes                             1
+ GLOBAL| Number of distributed systems (nodes)                                 1
+ GLOBAL| Number of threads for this process                                    4
+ GLOBAL| This output is from process                                           0
+ GLOBAL| OpenMP stack size per thread (OMP_STACKSIZE)                    default
+ GLOBAL| CPU model name                     Intel(R) Xeon(R) Processor @ 2.10GHz
+ GLOBAL| CPUID                                                              1003
+ GLOBAL| Compiled for CPUID                                                 1001
+
+ *** HINT in environment.F:970 :: The compiler target (x86_avx) used to ***
+ *** build this binary does not enable all instruction-set extensions   ***
+ *** available on this CPU (x86_avx512). Consider reconfiguring and     ***
+ *** rebuilding CP2K for this target system to enable them.             ***
+
+
+ MEMORY| system memory details [Kb]
+ MEMORY|                        rank 0           min           max       average
+ MEMORY| MemTotal             16477352      16477352      16477352      16477352
+ MEMORY| MemFree              12871008      12871008      12871008      12871008
+ MEMORY| Buffers                 41996         41996         41996         41996
+ MEMORY| Cached                2933156       2933156       2933156       2933156
+ MEMORY| Slab                   156456        156456        156456        156456
+ MEMORY| SReclaimable           123088        123088        123088        123088
+ MEMORY| MemLikelyFree        15969248      15969248      15969248      15969248
+
+
+ GENERATE|  Preliminary Number of Bonds generated:                             0
+ GENERATE|  Achieved consistency in connectivity generation.
+
+ *******************************************************************************
+ *******************************************************************************
+ **                                                                           **
+ **     #####                         ##              ##                      **
+ **    ##   ##            ##          ##              ##                      **
+ **   ##     ##                       ##            ######                    **
+ **   ##     ##  ##   ##  ##   #####  ##  ##   ####   ##    #####    #####    **
+ **   ##     ##  ##   ##  ##  ##      ## ##   ##      ##   ##   ##  ##   ##   **
+ **   ##  ## ##  ##   ##  ##  ##      ####     ###    ##   ######   ######    **
+ **    ##  ###   ##   ##  ##  ##      ## ##      ##   ##   ##       ##        **
+ **     #######   #####   ##   #####  ##  ##  ####    ##    #####   ##        **
+ **           ##                                                    ##        **
+ **                                                                           **
+ **                                                ... make the atoms dance   **
+ **                                                                           **
+ **            Copyright (C) by CP2K developers group (2000-2026)             **
+ **                      J. Chem. Phys. 152, 194103 (2020)                    **
+ **                                                                           **
+ *******************************************************************************
+
+
+ TOTAL NUMBERS AND MAXIMUM NUMBERS
+
+  Total number of            - Atomic kinds:                                   2
+                             - Atoms:                                          3
+                             - Shell sets:                                     3
+                             - Shells:                                        11
+                             - Primitive Cartesian functions:                 15
+                             - Cartesian basis functions:                     24
+                             - Spherical basis functions:                     23
+
+  Maximum angular momentum of- Orbital basis functions:                        2
+                             - Local part of the GTH pseudopotential:          2
+                             - Non-local part of the GTH pseudopotential:      0
+
+
+ SCF PARAMETERS         Density guess:                                   RESTART
+                        --------------------------------------------------------
+                        max_scf:                                             200
+                        max_scf_history:                                       0
+                        max_diis:                                              4
+                        --------------------------------------------------------
+                        eps_scf:                                        1.00E-06
+                        eps_scf_history:                                0.00E+00
+                        eps_diis:                                       1.00E-01
+                        eps_eigval:                                     1.00E-05
+                        --------------------------------------------------------
+                        level_shift [a.u.]:                             0.000000
+                        --------------------------------------------------------
+                        Mixing method:                           DIRECT_P_MIXING
+                        --------------------------------------------------------
+                        No outer SCF
+
+ *** WARNING in pw_env_methods.F:755 :: The selected periodicities in the ***
+ *** sections &CELL and &POISSON do not match                             ***
+
+
+ *******************************************************************************
+ *******************************************************************************
+ **                                                                           **
+ **  #  #   #    #                  #     #                      ##           **
+ **  #  #        ###   # ##   ###  ####         ##   # #    ###   #           **
+ **  #  #   #    #  #  ##    #  #   #     #    #  #  ## #  #  #   #           **
+ **   ##    #    #  #  #     # ##   #     #    #  #  #  #  # ##   #           **
+ **   ##    #    ###   #      # #    ##   #     ##   #  #   # #  ###          **
+ **                                                                           **
+ **   ##               ##                 #                                   **
+ **  #  #  # #    ###   #    #  #   ###         ###                           **
+ **  #  #  ## #  #  #   #    #  #  ##     #    ##                             **
+ **  ####  #  #  # ##   #     ###    ##   #      ##  N. Replicas:           1 **
+ **  #  #  #  #   # #  ###      #  ###    #    ###   N. Procs/Rep:          1 **
+ **                           ##                                              **
+ **                                       T. Laino  and F. Schiffmann         **
+ **                                       2008 - 2015                         **
+ *******************************************************************************
+ *******************************************************************************
+
+ REPLICA| layout of the replica grid, number of groups                         1
+ REPLICA| layout of the replica grid, size of each group                       1
+ REPLICA| MPI process to grid (group,rank) correspondence:
+  (   0 :    0,   0)
+
+ VIB|                        NORMAL MODES - CARTESIAN DISPLACEMENTS
+ VIB|
+ VIB|                         1                    2                    3
+ VIB|Frequency (cm^-1)  1.6229520118E+03    3.3666688853E+03    3.5138937695E+03
+ VIB|Red.Masses (a.u.)  1.0859401425E+00    1.0448339047E+00    1.0825075525E+00
+ VIB|Frc consts (a.u.)  1.0824521053E-01    4.4816662591E-01    5.0582423787E-01
+  ATOM  EL               X     Y     Z       X     Y     Z       X     Y     Z  
+     1  H              -0.50 -0.46 -0.17    0.55 -0.48 -0.45    0.35 -0.26 -0.25
+     2  O               0.07  0.02 -0.01   -0.05  0.00  0.01    0.00  0.06  0.04
+     3  H              -0.61  0.21  0.29    0.20  0.42  0.22   -0.39 -0.69 -0.34
+
+
+
+ VIB|                        NORMAL MODES - THERMOCHEMICAL DATA
+ VIB|          [q = gamma only, rigid-rotor harmonic oscillator (RRHO) model]
+
+ VIB|    Symmetry number:                                                      1
+ VIB|    Temperature [K]:                                                 273.15
+ VIB|    Pressure [Pa]:                                                101325.00
+
+ VIB|    Electronic energy (U) [kJ/mol]:                         -45205.94680154
+ VIB|    Zero-point correction [kJ/mol]:                             50.86231234
+ VIB|    Entropy [kJ/(mol K)]:                                        0.17688331
+ VIB|    Enthalpy correction (H-U) [kJ/mol]:                         58.81492052
+ VIB|    Gibbs energy correction [kJ/mol]:                           10.49924304
+ VIB|    Heat capacity [kJ/(mol*K)]:                                  0.02921854
+
+
+
+ -------------------------------------------------------------------------------
+ -                                                                             -
+ -                                DBCSR STATISTICS                             -
+ -                                                                             -
+ -------------------------------------------------------------------------------
+ COUNTER                                    TOTAL       BLAS       SMM       ACC
+ flops     5 x     4 x     5                49600       0.0%    100.0%      0.0%     
+ flops    13 x     4 x     5                64480       0.0%    100.0%      0.0%     
+ flops     5 x     4 x    13                64480       0.0%    100.0%      0.0%     
+ flops    13 x     4 x    13                83824       0.0%    100.0%      0.0%     
+ flops    13 x     5 x     4                97760       0.0%    100.0%      0.0%     
+ flops     5 x    13 x     4                97760       0.0%    100.0%      0.0%     
+ flops     5 x     5 x     4               112800       0.0%    100.0%      0.0%     
+ flops    13 x    13 x     4               254176       0.0%    100.0%      0.0%     
+ flops inhomo. stacks                           0       0.0%      0.0%      0.0%
+ flops total                       824.880000E+03       0.0%    100.0%      0.0%
+ flops max/rank                    824.880000E+03       0.0%    100.0%      0.0%
+ matmuls inhomo. stacks                         0       0.0%      0.0%      0.0%
+ matmuls total                               1686       0.0%    100.0%      0.0%
+ number of processed stacks                  1312       0.0%    100.0%      0.0%
+ average stack size                                     0.0       1.3       0.0
+ marketing flops                     1.058000E+06
+ -------------------------------------------------------------------------------
+ # multiplications                            250
+ max memory usage/rank               2.205098E+09
+ # max total images/rank                        1
+ # max 3D layers                                1
+ # MPI messages exchanged                       0
+ -------------------------------------------------------------------------------
+
+ -------------------------------------------------------------------------------
+ -                                                                             -
+ -                                GRID STATISTICS                              -
+ -                                                                             -
+ -------------------------------------------------------------------------------
+ LP    KERNEL             BACKEND                              COUNT     PERCENT
+ 2     collocate ortho    CPU                                  12580      24.78%
+ 2     integrate ortho    CPU                                  11174      22.01%
+ 3     integrate ortho    CPU                                   8956      17.64%
+ 3     collocate ortho    CPU                                   8500      16.74%
+ 4     integrate ortho    CPU                                   4725       9.31%
+ 4     collocate ortho    CPU                                   4250       8.37%
+ 5     integrate ortho    CPU                                    475       0.94%
+ 0     collocate general  CPU                                     57       0.11%
+ 1     integrate general  CPU                                     57       0.11%
+ -------------------------------------------------------------------------------
+
+ -------------------------------------------------------------------------------
+ -                                                                             -
+ -                          OFFLOAD MEMPOOL STATISTICS                         -
+ -                                                                             -
+ -------------------------------------------------------------------------------
+ Memory consumption                Number of allocations  Used [MiB]  Size [MiB]
+ Host                                                 10          37         204
+ -------------------------------------------------------------------------------
+
+ MEMORY| Estimated peak process memory [MiB]                                 976
+
+ -------------------------------------------------------------------------------
+ -                                                                             -
+ -                           R E F E R E N C E S                               -
+ -                                                                             -
+ -------------------------------------------------------------------------------
+ 
+ CP2K version 2026.2, the CP2K developers group (2026).
+ CP2K is freely available from https://www.cp2k.org/ .
+ 
+ M. Iannuzzi, J. Wilhelm, F. Stein, A. Bussy, H. Elgabarty, D. Golze, A. Hehn, 
+ M. Graml, S. Marek, B. Sertcan Gökmen, C. Schran, H. Forbert, R. Z. 
+ Khaliullin, A. Kozhevnikov, M. Taillefumier, R. Meli, V. V. Rybkin, M. Brehm, 
+ R. Schade, O. Schütt, J. V. Pototschnig, H. Mirhosseini, A. Knüpfer, D. Marx, 
+ M. Krack, J. Hutter, T. D. Kühne.
+ J. Phys. Chem. B 130, 1237-1310 (2026).
+ The CP2K Program Package Made Simple.
+ https://doi.org/10.1021/acs.jpcb.5c05851
+
+ T. D. Kühne, M. Iannuzzi, M. Del Ben, V. V. Rybkin, P. Seewald, F. Stein, T. 
+ Laino, R. Z. Khaliullin, O. Schütt, F. Schiffmann, D. Golze, J. Wilhelm, S. 
+ Chulkov, M. H. Bani-Hashemian, V. Weber, U. Borstnik, M. Taillefumier, A. S. 
+ Jakobovits, A. Lazzaro, H. Pabst, T. Müller, R. Schade, M. Guidon, S. 
+ Andermatt, N. Holmberg, G. K. Schenter, A. Hehn, A. Bussy, F. Belleflamme, G. 
+ Tabacchi, A. Glöß, M. Lass, I. Bethune, C. J. Mundy, C. Plessl, M. Watkins, 
+ J. VandeVondele, M. Krack, J. Hutter.
+ J. Chem. Phys. 152, 194103 (2020).
+ CP2K: An electronic structure and molecular dynamics software package - 
+ Quickstep: Efficient and accurate electronic structure calculations.
+ https://doi.org/10.1063/5.0007045
+
+ O. Schuett, P. Messmer, J. Hutter, J. VandeVondele.
+ Electronic Structure Calculations on Graphics Processing Units, 173-190 (2016).
+ GPU-Accelerated Sparse Matrix-Matrix Multiplication for Linear Scaling Density 
+ Functional Theory.
+ https://doi.org/10.1002/9781118670712.ch8
+
+ A. Heinecke, G. Henry, M. Hutchinson, H. Pabst.
+ Proceedings of Intl. Supercomputing Conference, 981-991 (2016).
+ LIBXSMM: Accelerating Small Matrix Multiplications by Runtime Code Generation.
+ https://doi.org/10.1109/SC.2016.83
+
+ U. Borstnik, J. VandeVondele, V. Weber, J. Hutter.
+ Parallel Comput. 40, 47-58 (2014).
+ Sparse matrix multiplication: The distributed block-compressed sparse row 
+ library.
+ https://doi.org/10.1016/j.parco.2014.03.012
+
+ J. VandeVondele, J. Hutter.
+ J. Chem. Phys. 127, 114105 (2007).
+ Gaussian basis sets for accurate calculations on molecular systems in gas and 
+ condensed phases.
+ https://doi.org/10.1063/1.2770708
+
+ T. D. Kühne, M. Krack, F. R. Mohamed, M. Parrinello.
+ Phys. Rev. Lett. 98, 066401 (2007).
+ Efficient and accurate Car-Parrinello-like approach to Born-Oppenheimer 
+ molecular dynamics.
+ https://doi.org/10.1103/PhysRevLett.98.066401
+
+ J. VandeVondele, M. Krack, F. Mohamed, M. Parrinello, T. Chassaing, J. Hutter.
+ Comput. Phys. Commun. 167, 103-128 (2005).
+ QUICKSTEP: Fast and accurate density functional calculations using a mixed 
+ Gaussian and plane waves approach.
+ https://doi.org/10.1016/j.cpc.2004.12.014
+
+ M. Krack.
+ Theor. Chem. Acc. 114, 145-152 (2005).
+ Pseudopotentials for H to Kr optimized for gradient-corrected 
+ exchange-correlation functionals.
+ https://doi.org/10.1007/s00214-005-0655-y
+
+ M. Frigo, S. G. Johnson.
+ Proc. IEEE 93, 216-231 (2005).
+ The design and implementation of FFTW3.
+ https://doi.org/10.1109/JPROC.2004.840301
+
+ J. Kolafa.
+ J. Comput. Chem. 25, 335-342 (2004).
+ Time-reversible always stable predictor-corrector method for molecular dynamics 
+ of polarizable molecules.
+ https://doi.org/10.1002/jcc.10385
+
+ C. Hartwigsen, S. Goedecker, J. Hutter.
+ Phys. Rev. B 58, 3641-3662 (1998).
+ Relativistic separable dual-space Gaussian pseudopotentials from H to Rn.
+ https://doi.org/10.1103/PhysRevB.58.3641
+
+ G. Lippert, J. Hutter, M. Parrinello.
+ Mol. Phys. 92, 477-487 (1997).
+ A hybrid Gaussian and plane wave density functional scheme.
+ https://doi.org/10.1080/002689797170220
+
+ S. Goedecker, M. Teter, J. Hutter.
+ Phys. Rev. B 54, 1703-1710 (1996).
+ Separable dual-space Gaussian pseudopotentials.
+ https://doi.org/10.1103/PhysRevB.54.1703
+
+ J. P. Perdew, K. Burke, M. Ernzerhof.
+ Phys. Rev. Lett. 77, 3865-3868 (1996).
+ Generalized gradient approximation made simple.
+ https://doi.org/10.1103/PhysRevLett.77.3865
+
+
+ -------------------------------------------------------------------------------
+ -                                                                             -
+ -                                T I M I N G                                  -
+ -                                                                             -
+ -------------------------------------------------------------------------------
+ SUBROUTINE                       CALLS  ASD         SELF TIME        TOTAL TIME
+                                MAXIMUM       AVERAGE  MAXIMUM  AVERAGE  MAXIMUM
+ CP2K                                 1  1.0    0.007    0.007   89.995   89.995
+ vb_anal                              1  2.0   89.008   89.008   89.481   89.481
+ -------------------------------------------------------------------------------
+
+ The number of warnings for this run is : 3
+ 
+ -------------------------------------------------------------------------------
+  **** **** ******  **  PROGRAM ENDED AT                 2026-10-22 17:40:04.945
+ ***** ** ***  *** **   PROGRAM RAN ON                                        vm
+ **    ****   ******    PROGRAM RAN BY                                 <unknown>
+ ***** **    ** ** **   PROGRAM PROCESS ID                                  1813
+  **** **  *******  **  PROGRAM STOPPED IN /home/user/runs/bt/test_cp2k_freq0/te
+                                           st_cp2k_freq/cp2k_job

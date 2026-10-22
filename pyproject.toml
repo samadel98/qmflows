@@ -34,6 +34,8 @@ classifiers = [
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Science/Research",
     "Topic :: Scientific/Engineering :: Chemistry",
@@ -43,24 +45,24 @@ requires-python = ">=3.8"
 dependencies = [
     "more-itertools",
     "h5py",
-    "numpy>=1.21,<2",
+    "numpy>=1.21",
     "pandas",
     "noodles>=0.3.3",
-    "plams==1.5.1",
-    "pyparsing!=3.0.0,<3.1.0",
+    "plams>=1.5.1",
+    "pyparsing>=3.0.1",
     "pyyaml>=5.1",
     "filelock",
     "packaging>=1.16.8",
 ]
 
 [project.urls]
-Homepage = "https://github.com/SCM-NV/qmflows"
-"Bug Tracker" = "https://github.com/SCM-NV/qmflows/issues"
+Homepage = "https://github.com/samadel98/qmflows"
+"Bug Tracker" = "https://github.com/samadel98/qmflows/issues"
 Documentation = "https://qmflows.readthedocs.io/en/latest/"
 
 [project.optional-dependencies]
 doc = [
-    "sphinx>=2.1,!=3.1.1,<7",
+    "sphinx>=2.1,!=3.1.1",
     "sphinx-autodoc-typehints",
     "sphinx_rtd_theme",
     "nbsphinx",
@@ -93,7 +95,7 @@ where = ["src"]
 include = ["qmflows*"]
 
 [tool.setuptools.package-data]
-FOX = [
+qmflows = [
     "data/dictionaries/*yaml",
     "py.typed",
 ]

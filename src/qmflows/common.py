@@ -104,8 +104,13 @@ class CP2KInfoMO(NamedTuple):
         nocc = is_occ.sum().item()
         return nocc, len(self.occupation) - nocc
 
-    def __array__(self, dtype: None | np.dtype[Any] = None) -> NDArray[Any]:
+    def __array__(
+        self, dtype: None | np.dtype[Any] = None, copy: None | bool = None
+    ) -> NDArray[Any]:
         """Convert this instance into a structured array."""
+        if copy is False:
+            raise ValueError("Unable to avoid a copy while creating an array as requested")
+
         struc_dtype = np.dtype([
             ("eigenvalues", "f8"),
             ("eigenvectors", "f8", (self.eigenvectors.shape[0],)),

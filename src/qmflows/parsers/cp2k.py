@@ -10,7 +10,6 @@ from collections.abc import Generator, Iterable, Iterator, Sequence
 from typing import Any, IO, TYPE_CHECKING, Literal, cast
 
 import numpy as np
-from pyparsing import SkipTo, Suppress, ZeroOrMore
 from scm.plams import Molecule, Units
 
 from ..common import CP2KVersion
@@ -49,7 +48,7 @@ def parse_cp2k_warnings(
     """Parse All the warnings found in an output file."""
     warnings: WarnDict = {}
     for msg, named_tup in package_warnings.items():
-        msg_list = named_tup.parser.parseFile(os.fspath(file_name)).asList()
+        msg_list = named_tup.parser.parse_file(os.fspath(file_name)).as_list()
 
         # Search for warnings that match the ones provided by the user
         iterator = assign_warning(named_tup.warn_type, msg, msg_list)
@@ -142,12 +141,15 @@ def get_cp2k_freq(file: PathLike | IO[Any],
 
 
 QUANTITY_MAPPING = {
-    ' VIB|              Electronic energy (U) [kJ/mol]:': 'E',
-    ' VIB|              Zero-point correction [kJ/mol]:': 'ZPE',
-    ' VIB|              Enthalpy correction (H-U) [kJ/mol]:': 'H',
-    ' VIB|              Entropy [kJ/(mol K)]:': 'S',
-    'VIB|              Temperature [K]:': 'T'
+    'Electronic energy (U) [kJ/mol]': 'E',
+    'Zero-point correction [kJ/mol]': 'ZPE',
+    'Enthalpy correction (H-U) [kJ/mol]': 'H',
+    'Entropy [kJ/(mol K)]': 'S',
+    'Temperature [K]': 'T',
 }
+
+# The indentation after `VIB|` differs between CP2K versions
+_THERMO_PATTERN = re.compile(r"^ VIB\|\s*(?P<key>[^:]+):\s+(?P<value>\S+)\s*$")
 
 QUANTITY_SET: frozenset[Quantity] = frozenset({'E', 'ZPE', 'H', 'S', 'G'})
 
@@ -188,11 +190,19 @@ def get_cp2k_thermo(
         raise ValueError(f"'quantity' has an invalid value ({quantity!r}); "
                          f"expected values: {tuple(QUANTITY_SET)!r}")
 
-    parser = ZeroOrMore(Suppress(SkipTo(" VIB|              Temperature ")) + SkipTo('\n\n\n\n'))
+    energy_dict: dict[str, float] = {}
+    with open(file_name, "r", encoding="utf8") as f:
+        for line in f:
+            match = _THERMO_PATTERN.match(line)
+            if match is None or match["key"] not in QUANTITY_MAPPING:
+                continue
 
-    energy = next(iter(parser.parseFile(os.fspath(file_name))))
-    energy_iter = (i.rsplit(maxsplit=1) for i in energy.splitlines() if i)
-    energy_dict = {QUANTITY_MAPPING.get(k): float(v) for k, v in energy_iter}
+            # Only use the first block of thermochemical data
+            energy_dict.setdefault(QUANTITY_MAPPING[match["key"]], float(match["value"]))
+            if len(energy_dict) == len(QUANTITY_MAPPING):
+                break
+        else:
+            raise ValueError(f"Failed to find the thermochemical data in {os.fspath(file_name)!r}")
 
     energy_dict['H'] += energy_dict['E']
     energy_dict['ZPE'] += energy_dict['E']
@@ -210,8 +220,7 @@ def read_cp2k_xyz(path: PathLike, dtype: DTypeLike = np.float64) -> NDArray[Any]
     with open(path, 'r', encoding="utf8") as f:
         n_atom = int(next(f))
         flat_iter = chain.from_iterable(_read_cp2k_xyz(f, n_atom))
-        ret = np.fromiter(flat_iter, dtype=dtype)
-        ret.shape = -1, n_atom, 3  # (n_mol, n_atom, 3)
+        ret = np.fromiter(flat_iter, dtype=dtype).reshape(-1, n_atom, 3)  # (n_mol, n_atom, 3)
     return ret
 
 

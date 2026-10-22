@@ -5,6 +5,7 @@ from __future__ import annotations
 import os
 import types
 import shutil
+import inspect
 import tempfile
 from collections import Counter
 from contextlib import AbstractContextManager, redirect_stdout
@@ -23,6 +24,10 @@ if TYPE_CHECKING:
     _FT = TypeVar("_FT", bound=Callable[..., Any])
 
 __all__ = ['to_runtime_error', 'init_restart', 'InitRestart']
+
+#: Whether the PLAMS :class:`~scm.plams.core.jobmanager.JobManager` can reuse an existing
+#: working directory, a feature that was introduced in PLAMS 2025.101
+_PLAMS_USE_EXISTING_FOLDER = "use_existing_folder" in inspect.signature(JobManager).parameters
 
 
 def get_tmpfile_name(name: str = "tmp_qmflows_") -> Path:
@@ -149,22 +154,66 @@ def init_restart(
     .. |load_all| replace:: :func:`plams.load_all()<scm.plams.core.functions.load_all>`
 
     """
-    is_init: bool = config.init
-    # Temporary supress printing
-    with open(os.devnull, 'w', encoding="utf8") as f, redirect_stdout(f):
-        init(path, folder)
-
     # Parse variables
     path_ = os.getcwd() if path is None else abspath(path)
     folder_ = 'plams_workdir' if folder is None else normpath(folder)
     workdir = join(path_, folder_)
+
+    if _PLAMS_USE_EXISTING_FOLDER:
+        jobmanager = _init_restart_jobmanager(path_, folder_)
+    else:
+        jobmanager = _init_restart_legacy(path, folder, path_, folder_, workdir)
+    workdir = jobmanager.workdir
+
+    # Update JobManager.names
+    folder_iterator = (splitext(f)[0] for f in os.listdir(workdir))
+    jobmanager.names = dict(Counter(folder_iterator))
+
+    # Load all previously pickled .dill files into the JobManager
+    # NOTE: This can be quite slow if a large number of (large) jobs is stored therein
+    if load_jobs:
+        load_all(workdir, jobmanager)
+
+
+def _init_restart_jobmanager(path: str, folder: str) -> JobManager:
+    """Set up the default PLAMS job manager in a possibly pre-existing directory.
+
+    Requires PLAMS >= 2025.101.
+    """
+    # Pass `quiet=True` rather than redirecting stdout, as PLAMS' logger would otherwise
+    # permanently bind itself to the (closed) redirected stream
+    init(path, folder, quiet=True, use_existing_folder=True)
+
+    # `init` is a no-op if PLAMS was already explicitly initialized
+    jobmanager = config.default_jobmanager
+    if os.path.realpath(jobmanager.workdir) != os.path.realpath(join(path, folder)):
+        jobmanager = JobManager(config.jobmanager, path, folder, use_existing_folder=True)
+        config.default_jobmanager = jobmanager
+    return jobmanager
+
+
+def _init_restart_legacy(
+    path: None | str | os.PathLike[str],
+    folder: None | str | os.PathLike[str],
+    path_: str,
+    folder_: str,
+    workdir: str,
+) -> JobManager:
+    """Set up the default PLAMS job manager in a possibly pre-existing directory.
+
+    For PLAMS < 2025.101.
+    """
+    is_init: bool = config.init
+    # Temporary supress printing
+    with open(os.devnull, 'w', encoding="utf8") as f, redirect_stdout(f):
+        init(path, folder)
 
     # The JobManager instance
     jobmanager = config.default_jobmanager
 
     # There is no previously existing workdir; move along
     if jobmanager.workdir == workdir:
-        return
+        return jobmanager
 
     # There is an actual preexisting workdir;
     # Remove the freshly created workdir and change to the previously created one.
@@ -182,15 +231,7 @@ def init_restart(
     jobmanager.workdir = workdir
     jobmanager.logfile = join(workdir, 'logfile')
     jobmanager.input = join(workdir, 'input')
-
-    # Update JobManager.names
-    folder_iterator = (splitext(f)[0] for f in os.listdir(workdir))
-    jobmanager.names = dict(Counter(folder_iterator))
-
-    # Load all previously pickled .dill files into the JobManager
-    # NOTE: This can be quite slow if a large number of (large) jobs is stored therein
-    if load_jobs:
-        load_all(workdir, jobmanager)
+    return jobmanager
 
 
 class InitRestart(AbstractContextManager):

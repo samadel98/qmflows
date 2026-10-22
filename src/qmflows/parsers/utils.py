@@ -44,7 +44,7 @@ skipLine = Suppress(skipSupress('\n'))
 def parse_file(p: ParserElement, file_name: str | os.PathLike[str]) -> ParseResults:
     """Apply parser `p` on file `file_name`."""
     try:
-        return p.parseFile(os.fspath(file_name))
+        return p.parse_file(os.fspath(file_name))
     except ParseException as ex:
         raise ParseException(f"Error Trying to parse: {p} in file: {file_name}") from ex
 
@@ -74,7 +74,7 @@ def string_array_to_molecule(
 
     and covert it to a plams ``Molecule``.
     """
-    mols = parse_file(parser_fun, file_name).asList()
+    mols = parse_file(parser_fun, file_name).as_list()
     last_mol = np.array(mols[-1])
     elems = last_mol[:, 0]
     coords = np.array(last_mol[:, 1:], dtype=np.float64)

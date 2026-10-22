@@ -1,3 +1,22 @@
+# Unreleased
+
+## New
+ * Add support for PLAMS 2024, 2025 and 2026; the `plams==1.5.1` pin is replaced by `plams>=1.5.1`.
+   The pre-AMS `ADFJob` and `DFTBJob` interfaces are only available with PLAMS versions that still provide them.
+ * Add support for NumPy 2, pandas 3 and pyparsing >= 3.1.
+ * Add support for CP2K 2026.
+ * Add formal Python 3.13 and 3.14 support.
+
+## Changed
+ * The `cell_opt` template no longer sets `MOTION/CELL_OPT/TYPE`, which was removed in CP2K 2026
+   (`DIRECT_CELL_OPT`, the default of older CP2K versions, is always used).
+ * Modernized the CI and switched the PyPI workflow to trusted publishing.
+
+## Fixed
+ * Fixed `Result.results` raising an `AttributeError` instead of warning when unpickling the job fails.
+ * Fixed the doctest collection of `qmflows._settings` on recent Python 3.11 patch releases.
+
+
 # Version 1.0.0 (6/10/2023)
 
 ## New
