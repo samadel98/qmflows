@@ -8,6 +8,11 @@ from typing import TypeVar, Any, TYPE_CHECKING
 
 from noodles.serial import Serialiser
 
+try:
+    from scm.plams.mol.context import AsArrayContext
+except ImportError:  # PLAMS < 2024
+    AsArrayContext = None
+
 if TYPE_CHECKING:
     from .._settings import Settings
     from scm.plams import Molecule
@@ -67,11 +72,18 @@ class SerMolecule(Serialiser):
 
     def encode(self, obj: Molecule, make_rec: _MakeRec[_MolDict]) -> _RecDict[_MolDict]:
         """Encode the passed PLAMS Molecule."""
-        return make_rec(obj.as_dict())
+        mol_dict = obj.as_dict()
+        # PLAMS 2024 includes the (unserializable) molecule-bound `as_array` context manager
+        mol_dict.pop("_as_array", None)  # type: ignore[misc]
+        return make_rec(mol_dict)
 
     def decode(self, cls: type[Molecule], data: _MolDict) -> Molecule:
         """Decode the passed data into a PLAMS Molecule."""
-        return cls.from_dict(data)
+        mol = cls.from_dict(data)
+        # Unlike later versions, PLAMS 2024 does not recreate it in `Molecule.from_dict`
+        if AsArrayContext is not None and "_as_array" not in vars(mol):
+            mol._as_array = AsArrayContext(mol)
+        return mol
 
 
 class SerMol(Serialiser):
