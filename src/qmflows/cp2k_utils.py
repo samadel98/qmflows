@@ -405,7 +405,7 @@ def _construct_df(columns, prm_map) -> pd.DataFrame:  # noqa: E302
             data = np.array([v for v in prm_map.values()], dtype=np.str_)
 
         if data.ndim == 1:
-            data.shape = -1, 1
+            data = data.reshape(-1, 1)
             columns_ = [columns]
         else:
             columns_ = columns
@@ -534,8 +534,8 @@ def prm_to_df(settings: MutableMapping) -> None:
 
         >>> prm_to_df(s)
 
-        >>> print(type(s.lennard_jones))
-        <class 'pandas.core.frame.DataFrame'>
+        >>> print(type(s.lennard_jones).__name__)
+        DataFrame
 
         >>> print(s)  # doctest: +NORMALIZE_WHITESPACE
         lennard_jones:                param      unit   Cs   Cd    O    H

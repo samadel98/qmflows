@@ -49,7 +49,7 @@ def parse_cp2k_warnings(
     """Parse All the warnings found in an output file."""
     warnings: WarnDict = {}
     for msg, named_tup in package_warnings.items():
-        msg_list = named_tup.parser.parseFile(os.fspath(file_name)).asList()
+        msg_list = named_tup.parser.parse_file(os.fspath(file_name)).as_list()
 
         # Search for warnings that match the ones provided by the user
         iterator = assign_warning(named_tup.warn_type, msg, msg_list)
@@ -190,7 +190,7 @@ def get_cp2k_thermo(
 
     parser = ZeroOrMore(Suppress(SkipTo(" VIB|              Temperature ")) + SkipTo('\n\n\n\n'))
 
-    energy = next(iter(parser.parseFile(os.fspath(file_name))))
+    energy = next(iter(parser.parse_file(os.fspath(file_name))))
     energy_iter = (i.rsplit(maxsplit=1) for i in energy.splitlines() if i)
     energy_dict = {QUANTITY_MAPPING.get(k): float(v) for k, v in energy_iter}
 
@@ -210,8 +210,7 @@ def read_cp2k_xyz(path: PathLike, dtype: DTypeLike = np.float64) -> NDArray[Any]
     with open(path, 'r', encoding="utf8") as f:
         n_atom = int(next(f))
         flat_iter = chain.from_iterable(_read_cp2k_xyz(f, n_atom))
-        ret = np.fromiter(flat_iter, dtype=dtype)
-        ret.shape = -1, n_atom, 3  # (n_mol, n_atom, 3)
+        ret = np.fromiter(flat_iter, dtype=dtype).reshape(-1, n_atom, 3)  # (n_mol, n_atom, 3)
     return ret
 
 

@@ -1,4 +1,5 @@
 import numpy as np
+import pytest
 from assertionlib import assertion
 
 from qmflows.common import CP2KInfoMO
@@ -26,3 +27,14 @@ class TestInfoMO:
         ar = np.array(info_mo)
         assertion.eq(ar.dtype, ref.dtype)
         np.testing.assert_array_equal(ar, ref)
+
+    @pytest.mark.skipif(np.lib.NumpyVersion(np.__version__) < "2.0.0", reason="requires NumPy 2")
+    def test_array_no_copy(self) -> None:
+        info_mo = CP2KInfoMO(
+            eigenvalues=np.arange(3),
+            eigenvectors=np.arange(12).reshape(4, 3),
+            orb_index=np.array([5, 6, 7]),
+            occupation=np.array([2.0, 2.0, 0.0]),
+        )
+        with pytest.raises(ValueError):
+            np.array(info_mo, copy=False)

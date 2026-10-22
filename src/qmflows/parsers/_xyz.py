@@ -6,7 +6,7 @@ import os
 from collections.abc import Iterable
 
 from pyparsing import (Group, LineEnd, OneOrMore, Suppress, Word, alphas,
-                       restOfLine, ParseResults)
+                       rest_of_line, ParseResults)
 from scm.plams import Atom, Molecule
 
 from .utils import floatNumber, natural
@@ -17,13 +17,13 @@ __all__ = ['parse_string_xyz', 'readXYZ',
 
 # =============================================================================
 
-header = natural + LineEnd() + restOfLine
+header = natural + LineEnd() + rest_of_line
 
 label = Word(alphas, max=2)
 
 xyz = floatNumber * 3
 
-atomParser = label.setResultsName("label") + xyz.setResultsName("xyz")
+atomParser = label.set_results_name("label") + xyz.set_results_name("xyz")
 
 parser_xyz = Suppress(header) + OneOrMore(Group(atomParser))
 
@@ -37,7 +37,7 @@ def parse_string_xyz(xs: str) -> list[AtomXYZ]:
     :type:  string
     :return: [AtomXYZ]
     """
-    rs = parser_xyz.parseString(xs)
+    rs = parser_xyz.parse_string(xs)
     return createAtoms(rs)
 
 
@@ -48,7 +48,7 @@ def readXYZ(pathXYZ: str | os.PathLike[str]) -> list[AtomXYZ]:
     :type:  string
     :return: [AtomXYZ]
     """
-    xs = parser_xyz.parseFile(os.fspath(pathXYZ))
+    xs = parser_xyz.parse_file(os.fspath(pathXYZ))
     return createAtoms(xs)
 
 
@@ -60,7 +60,7 @@ def manyXYZ(pathXYZ: str | os.PathLike[str]) -> list[list[AtomXYZ]]:
     :return: [[AtomXYZ]]
     """
     manyMol = OneOrMore(Group(parser_xyz))
-    xss = manyMol.parseFile(os.fspath(pathXYZ))
+    xss = manyMol.parse_file(os.fspath(pathXYZ))
     return [createAtoms(i) for i in xss]
 
 
