@@ -1,5 +1,7 @@
 """Test CP2K parser functions."""
 
+from __future__ import annotations
+
 import os
 
 import numpy as np
@@ -7,7 +9,7 @@ import h5py
 import pytest
 from assertionlib import assertion
 
-from qmflows.parsers.cp2k import parse_cp2k_warnings, read_cp2k_basis
+from qmflows.parsers.cp2k import parse_cp2k_warnings, read_cp2k_basis, get_cp2k_thermo
 from qmflows.parsers._cp2k_orbital_parser import _find_mo_start, read_cp2k_number_of_orbitals
 from qmflows.test_utils import PATH
 from qmflows.warnings_qmflows import QMFlows_Warning, cp2k_warnings
@@ -20,6 +22,28 @@ def test_parse_cp2k_warnings():
     map_warns = parse_cp2k_warnings(OUTPUT_FILE, cp2k_warnings)
     assertion.truth(all((val == QMFlows_Warning)
                         for val in map_warns.values()))
+
+
+@pytest.mark.parametrize("filename,ref", [
+    # Thermochemical data in the CP2K <= 2023 and 2026 output formats: (E, ZPE, H-U, S, T)
+    ("output_cp2k/cp2k_freq/cp2k_freq.out",
+     (-36022.96379486, 134.30257120, 142.77889812, 0.20439402, 273.15)),
+    ("cp2k_freq_2026.2.out",
+     (-45205.94680154, 50.86231234, 58.81492052, 0.17688331, 273.15)),
+], ids=["cp2k_2023", "cp2k_2026"])
+def test_get_cp2k_thermo(filename: str, ref: tuple[float, ...]) -> None:
+    """Test :func:`get_cp2k_thermo` with output files of different CP2K versions."""
+    E, zpe, h, S, T = ref
+    expected = {"E": E, "ZPE": E + zpe, "H": E + h, "S": S, "G": E + h - T * S}
+    for quantity, value in expected.items():
+        out = get_cp2k_thermo(PATH / filename, quantity, unit="kj/mol")
+        np.testing.assert_allclose(out, value, err_msg=quantity)
+
+
+def test_get_cp2k_thermo_missing() -> None:
+    """Test :func:`get_cp2k_thermo` with an output file without thermochemical data."""
+    with pytest.raises(ValueError, match="thermochemical data"):
+        get_cp2k_thermo(PATH / "output_cp2k" / "cp2k_job" / "cp2k_job.out")
 
 
 class TestReadBasis:

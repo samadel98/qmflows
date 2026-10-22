@@ -418,7 +418,6 @@ specific:
                         center_point: 0.0 0.0 0.0
         motion:
             cell_opt:
-                type: direct_cell_opt
                 optimizer: lbfgs
                 max_iter: 500
             print:
