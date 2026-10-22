@@ -101,7 +101,8 @@ class Result:
         self._molecule = molecule
         self.archive = {"plams_dir": plams_dir, 'work_dir': work_dir}
         self.job_name = job_name
-        self.status = status
+        # PLAMS >= 2025.101 uses a `JobStatus` string enum, which noodles cannot serialize
+        self.status = str(status)
         self.warnings = warnings
 
         self._results_open = False
@@ -253,7 +254,9 @@ class Result:
 
             # Unpickle the results
             try:
-                results = plams.load(self._results).results
+                job = plams.load(self._results)
+                assert job is not None, f'Failed to unpickle {self._results!r}'
+                results = job.results
                 assert results is not None, f'Failed to unpickle {self._results!r}'
             except (AssertionError, plams.FileError) as ex:
                 file_exc = ex

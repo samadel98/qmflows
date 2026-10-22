@@ -3,7 +3,8 @@
 from pathlib import Path
 
 import pytest
-from scm.plams import ADFJob, AMSJob, Molecule
+from scm import plams
+from scm.plams import AMSJob, Molecule
 from assertionlib import assertion
 
 from qmflows import PackageWrapper, run, Settings
@@ -25,11 +26,6 @@ def test_package_wrapper(tmp_path: Path) -> None:
     s1.input.DFTB.Model = 'DFTB3'
     s1.input.DFTB.ResourcesDir = 'DFTB.org/3ob-3-1'
 
-    s2 = Settings()
-    s2.input.basis.type = 'DZP'
-    s2.input.basis.core = 'None'
-    s2.input.basis.createoutput = 'None'
-
     mol = WATER
 
     job1 = PackageWrapper(AMSJob)(s1, mol, name='amsjob')
@@ -37,7 +33,20 @@ def test_package_wrapper(tmp_path: Path) -> None:
     assertion.isinstance(result1, ResultWrapper)
     assertion.eq(result1.results.job.status, 'successful')
 
-    job2 = PackageWrapper(ADFJob)(s2, mol, name='adfjob')
+
+@pytest.mark.slow
+@requires_ams
+@pytest.mark.skipif(not hasattr(plams, "ADFJob"), reason="`ADFJob` was removed in PLAMS 2025.101")
+def test_package_wrapper_adf(tmp_path: Path) -> None:
+    """Tests for :class:`~qmflows.packages.PackageWrapper` with the pre-AMS ADF job."""
+    s2 = Settings()
+    s2.input.basis.type = 'DZP'
+    s2.input.basis.core = 'None'
+    s2.input.basis.createoutput = 'None'
+
+    mol = WATER
+
+    job2 = PackageWrapper(plams.ADFJob)(s2, mol, name='adfjob')
     result2 = run(job2, path=tmp_path, folder="test_package_wrapper")
     assertion.isinstance(result2, ADF_Result)
     assertion.eq(result2.results.job.status, 'successful')

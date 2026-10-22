@@ -254,8 +254,14 @@ class ADF(Package):
         if nproc:
             adf_settings.runscript.nproc = nproc
         adf_settings.input = settings.specific.adf
-        job = plams.ADFJob(name=job_name, molecule=mol,
-                           settings=adf_settings)
+        try:
+            job_type = plams.ADFJob
+        except AttributeError:
+            raise RuntimeError(
+                "The pre-AMS ADF interface (`plams.ADFJob`) was removed in PLAMS 2025.101; "
+                "install `plams<2025` or run ADF via `PackageWrapper(plams.AMSJob)`"
+            ) from None
+        job = job_type(name=job_name, molecule=mol, settings=adf_settings)
         result = job.run()
 
         # Relative job path
